@@ -1,0 +1,12 @@
+{
+  "name": "nodeSSE",
+  "version": "1.0.0",
+  "main": "server.js",
+  "repository": "https://github.com/worawut-dev/nodeSSE.git",
+  "author": "Worawut Sangangam, Jame <jamesworawut1996@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "2.8.*",
+    "express": "4.19.*"
+  }
+}
