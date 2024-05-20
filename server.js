@@ -2,39 +2,37 @@ const express = require('express');
 const cors = require('cors');
 
 const app = express();
-
-// เพิ่ม middleware สำหรับใช้งาน CORS
+const port = 8080;
 app.use(cors());
 
-// Route สำหรับการส่ง Server Sent Events (SSE)
-app.get('/events', (req, res) => {
-  // ตั้งค่า Header สำหรับ SSE
+const getRandomFloat = (min, max) => (Math.random() * (max - min) + min).toFixed(2);
+
+app.get('/events', async (req, res) => {
   res.writeHead(200, {
     'Content-Type': 'text/event-stream',
     'Cache-Control': 'no-cache',
     Connection: 'keep-alive',
   });
 
-  // ส่งข้อมูลไปยัง Client ทุก 2 วินาที
   const intervalId = setInterval(() => {
     const currentDate = new Date();
+    const usdRate = getRandomFloat(36, 37); // สุ่มค่าอัตราแลกเปลี่ยน USD ในช่วง 36.00 - 37.00
+
     const data = {
       dateTime: currentDate.toISOString(),
+      usd: usdRate,
     };
-    res.write(`data: ${JSON.stringify(data)}\n\n`);
-  }, 2000);
 
-  // จัดการเมื่อ Client ปิดการเชื่อมต่อ
+    res.write(`data: ${JSON.stringify(data)}\n\n`);
+  }, 5000);
+
   req.on('close', () => {
+    console.log('========This Close========');
     clearInterval(intervalId);
     res.end();
   });
 });
 
-// Serve static files
-app.use('/basicSSE', express.static('./basicSSE.html'));
-
-// เริ่มต้น Server ที่ port 8080
-app.listen(8080, () => {
-  console.log('Server running on port 8080');
+app.listen(port, () => {
+  console.log(`app listening on port ${port}`);
 });

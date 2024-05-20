@@ -1,0 +1,27 @@
+.exchange-table {
+  border-collapse: collapse;
+  width: 30%; /* เปลี่ยนความกว้างของตาราง */
+  margin: 0 auto; /* ให้ตารางอยู่ตรงกลาง */
+}
+
+.exchange-table th, .exchange-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.exchange-table th {
+  background-color: #f2f2f2;
+}
+
+.exchange-table tr:hover {
+  background-color: #f2f2f2;
+}
+
+.exchange-table thead {
+  position: 'sticky';
+  top: 0;
+}
+.exchange-table tbody {
+  table-layout: 'fixed';
+}
