@@ -23,3 +23,4 @@ npm install
 node server.js
 ```
 
+![exampleNodeSSE](https://github.com/worawut-dev/nodeSSE/assets/64031286/97e09c0c-142a-4269-b775-837ac8169e54)
