@@ -7,7 +7,7 @@
 </head>
 <body>
   <div>
-    <h1>Example Server Sent Event</h1>
+    <h1>Example Server Sent Event By Use HTTP2</h1>
   </div>
   <div>
     <!-- สร้างปุ่มสําหรับปิด EventSource -->
@@ -29,7 +29,7 @@
 
     // ฟังก์ชันสำหรับเริ่มต้นการเชื่อมต่อ EventSource
     function subscribeToSSE() {
-      eventSource = new EventSource('http://localhost:8080/events');
+      eventSource = new EventSource('https://localhost:8080/events');
     }
 
     // ฟังก์ชันสำหรับปิดการเชื่อมต่อ EventSource

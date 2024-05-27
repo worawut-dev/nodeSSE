@@ -6,7 +6,5 @@
   "author": "Worawut Sangangam, Jame <jamesworawut1996@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "cors": "2.8.*",
-    "express": "4.19.*"
   }
 }

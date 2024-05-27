@@ -1,4 +1,4 @@
-# Server Sent Event (SSE) Example
+# Server Sent Event BY USE HTTP2(SSE) Example 
 
 ## ความต้องการระบบ
 
@@ -18,6 +18,13 @@ npm install
 ## การใช้งาน
 
 เมื่อติดตั้งแล้ว คุณสามารถรันเซิร์ฟเวอร์ได้ด้วยคำสั่ง:
+
+command นี้จะสร้าง certificate and key สำหรับใช้สำหรับ HTTP2
+```bash
+openssl req -x509 -newkey rsa:2048 -nodes -sha256 -subj '/CN=localhost' \
+  -keyout localhost-privkey.pem -out localhost-cert.pem
+```
+เมื่อ run เสร็จจะปรากฏ file localhost-privkey.pem และ localhost-cert.pem
 
 ```bash
 node server.js
