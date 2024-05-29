@@ -6,6 +6,9 @@ const app = express();
 // เพิ่ม middleware สำหรับใช้งาน CORS
 app.use(cors());
 
+// function สำหรับสุ่มตัวเลขจาก min ถึง max
+const getRandomFloat = (min, max) => (Math.random() * (max - min) + min).toFixed(3);
+
 // Route สำหรับการส่ง Server Sent Events (SSE)
 app.get('/events', (req, res) => {
   // ตั้งค่า Header สำหรับ SSE
@@ -15,14 +18,16 @@ app.get('/events', (req, res) => {
     Connection: 'keep-alive',
   });
 
-  // ส่งข้อมูลไปยัง Client ทุก 2 วินาที
+  // ส่งข้อมูลไปยัง Client ทุก 1 วินาที
   const intervalId = setInterval(() => {
     const currentDate = new Date();
+    const usdRate = getRandomFloat(36.500, 37.202); // สุ่มค่าอัตราแลกเปลี่ยน USD ในช่วง 36.000 - 37.000
     const data = {
       dateTime: currentDate.toISOString(),
+      bath: usdRate,
     };
     res.write(`data: ${JSON.stringify(data)}\n\n`);
-  }, 2000);
+  }, 1000);
 
   // จัดการเมื่อ Client ปิดการเชื่อมต่อ
   req.on('close', () => {
@@ -32,7 +37,9 @@ app.get('/events', (req, res) => {
 });
 
 // Serve static files
-app.use('/basicSSE', express.static('./basicSSE.html'));
+app.use('/currencyExchange', express.static('./currencyExchange.html'));
+app.use('/styles', express.static('./styles.css', { 'Content-Type': 'text/css' }));
+
 
 // เริ่มต้น Server ที่ port 8080
 app.listen(8080, () => {

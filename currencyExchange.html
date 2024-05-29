@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Currency Exchange Rate</title>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="http://localhost:8080/styles"
+    />
+  </head>
+  <body>
+    <div class="button-container">
+      <button id="close-sse" class="button" onclick="closeSSE()">
+        Close SSE
+      </button>
+      <button
+        id="reconnect-sse"
+        class="button"
+        onclick="reconnectSSE()"
+        disabled
+      >
+        Reconnect SSE
+      </button>
+      <button
+        id="connect-http2"
+        onclick="reconnectSSE(true)"
+        class="button"
+        disabled
+      >
+        Connect SSE HTTP2
+      </button>
+    </div>
+    <h1>USD/THB - ดอลลาร์สหรัฐ บาทไทย (ข้อมูลจำลอง)</h1>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Exchange Rate (THB)</th>
+          </tr>
+        </thead>
+        <tbody id="data-table" />
+      </table>
+    </div>
+
+    <script>
+      // ฟังก์ชันสำหรับเริ่มต้นการเชื่อมต่อ EventSource
+      function subscribeToSSE(flag) {
+        if (flag) {
+          eventSource = new EventSource("https://localhost:8081/events");
+        } else {
+          eventSource = new EventSource("http://localhost:8080/events");
+        }
+      }
+
+      // ฟังก์ชันสำหรับตั้งค่าสถานะปุ่ม
+      function setButtonStatus(close, reconnect) {
+        document.getElementById("close-sse").disabled = close;
+        document.getElementById("reconnect-sse").disabled = reconnect;
+        document.getElementById("connect-http2").disabled = reconnect;
+      }
+
+      // ฟังก์ชันสำหรับปิดการเชื่อมต่อ EventSource
+      function closeSSE() {
+        setButtonStatus(true, false);
+        if (eventSource && eventSource.readyState === 1) {
+          eventSource.close();
+        }
+        console.log("Close SSE");
+      }
+
+      // ฟังก์ชันสำหรับตรวจสอบสถานะการเชื่อมต่อกับ Server
+      function eventTrigger() {
+        if (eventSource) {
+          eventSource.onopen = () => {
+            setButtonStatus(false, true);
+            console.log("Connected to server");
+          };
+
+          eventSource.onmessage = (event) => {
+            const dataFromServer = JSON.parse(event.data);
+            addDataToTable(dataFromServer);
+            console.log("Received message:", event.data);
+          };
+
+          eventSource.onerror = (error) => {
+            console.error("Error with EventSource:", error);
+            eventSource.close();
+          };
+        }
+      }
+
+      // ฟังก์ชันสำหรับเชื่อมต่อ EventSource อีกครั้ง
+      function reconnectSSE(flag) {
+        setButtonStatus(true, true);
+        subscribeToSSE(flag);
+        eventTrigger();
+      }
+
+      // เริ่มต้นการเชื่อมต่อ EventSource และตรวจสอบสถานะ
+      subscribeToSSE();
+      eventTrigger();
+
+      // Function to format date and time
+      function formatDateTime(dateTime) {
+        const options = {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        };
+        return new Date(dateTime).toLocaleString("th", options);
+      }
+
+      // Function to add data to the table
+      function addDataToTable(data) {
+        const tableBody = document.getElementById("data-table");
+        const row = document.createElement("tr");
+
+        const cellTime = document.createElement("td");
+        cellTime.textContent = formatDateTime(data.dateTime);
+        row.appendChild(cellTime);
+
+        const cellBath = document.createElement("td");
+        cellBath.textContent = data.bath;
+        row.appendChild(cellBath);
+
+        // Insert the new row at the top of the table body
+        if (tableBody.firstChild) {
+          tableBody.insertBefore(row, tableBody.firstChild);
+        } else {
+          tableBody.appendChild(row);
+        }
+      }
+    </script>
+  </body>
+</html>
