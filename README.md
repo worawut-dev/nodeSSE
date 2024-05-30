@@ -29,4 +29,6 @@ node server.js
 ```
 
 7. เปิด browser ด้วย route `http://localhost:8080/currencyExchange`
-![Uploading Screen Recording 2567-05-30 at 18.17.48.gif…]()
+
+
+![sse_example](https://github.com/worawut-dev/nodeSSE/assets/64031286/b3e959d1-ec2a-402f-a313-d31197be6e9a)
