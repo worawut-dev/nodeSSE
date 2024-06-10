@@ -28,7 +28,12 @@ openssl req -x509 -newkey rsa:2048 -nodes -sha256 -subj '/CN=localhost' \
 node server.js
 ```
 
-7. เปิด browser ด้วย route `http://localhost:8080/currencyExchange`
+7. เปิดอีก terminal แล้ว run คำสั่ง start serverHttp2
+```bash
+node serverHttp2.js
+```
+
+8. เปิด browser ด้วย route `http://localhost:8080/currencyExchange`
 
 
 ![sse_example](https://github.com/worawut-dev/nodeSSE/assets/64031286/b3e959d1-ec2a-402f-a313-d31197be6e9a)
