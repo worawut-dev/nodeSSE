@@ -32,7 +32,8 @@
         Connect SSE HTTP2
       </button>
     </div>
-    <h1>USD/THB - ดอลลาร์สหรัฐ บาทไทย (ข้อมูลจำลอง)</h1>
+    <h1>USD/THB - ดอลลาร์สหรัฐ บาทไทย (ข้อมูลจำลอง)</h1> 
+    <h2 id="status-connect"></h2>
     <div class="table-container">
       <table>
         <thead>
@@ -50,8 +51,12 @@
       function subscribeToSSE(flag) {
         if (flag) {
           eventSource = new EventSource("https://localhost:8081/events");
+          var paragraph = document.getElementById("p");
+        var text = document.createTextNode("This just got added");
+          document.getElementById("status-connect").innerText = "[Connected to SSE HTTP2]";
         } else {
           eventSource = new EventSource("http://localhost:8080/events");
+          document.getElementById("status-connect").innerText = "[Connected to SSE HTTP1]";
         }
       }
 
@@ -67,6 +72,7 @@
         setButtonStatus(true, false);
         if (eventSource && eventSource.readyState === 1) {
           eventSource.close();
+          document.getElementById("status-connect").innerText = "[Connection Closed]";
         }
         console.log("Close SSE");
       }
