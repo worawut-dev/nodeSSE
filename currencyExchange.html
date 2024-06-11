@@ -32,7 +32,7 @@
         Connect SSE HTTP2
       </button>
     </div>
-    <h1>USD/THB - ดอลลาร์สหรัฐ บาทไทย (ข้อมูลจำลอง)</h1> 
+    <h1>USD/THB - ดอลลาร์สหรัฐ บาทไทย (ข้อมูลจำลอง)</h1>
     <h2 id="status-connect"></h2>
     <div class="table-container">
       <table>
@@ -45,103 +45,105 @@
         <tbody id="data-table" />
       </table>
     </div>
-
-    <script>
-      // ฟังก์ชันสำหรับเริ่มต้นการเชื่อมต่อ EventSource
-      function subscribeToSSE(flag) {
-        if (flag) {
-          eventSource = new EventSource("https://localhost:8081/events");
-          var paragraph = document.getElementById("p");
-        var text = document.createTextNode("This just got added");
-          document.getElementById("status-connect").innerText = "[Connected to SSE HTTP2]";
-        } else {
-          eventSource = new EventSource("http://localhost:8080/events");
-          document.getElementById("status-connect").innerText = "[Connected to SSE HTTP1]";
-        }
-      }
-
-      // ฟังก์ชันสำหรับตั้งค่าสถานะปุ่ม
-      function setButtonStatus(close, reconnect) {
-        document.getElementById("close-sse").disabled = close;
-        document.getElementById("reconnect-sse").disabled = reconnect;
-        document.getElementById("connect-http2").disabled = reconnect;
-      }
-
-      // ฟังก์ชันสำหรับปิดการเชื่อมต่อ EventSource
-      function closeSSE() {
-        setButtonStatus(true, false);
-        if (eventSource && eventSource.readyState === 1) {
-          eventSource.close();
-          document.getElementById("status-connect").innerText = "[Connection Closed]";
-        }
-        console.log("Close SSE");
-      }
-
-      // ฟังก์ชันสำหรับตรวจสอบสถานะการเชื่อมต่อกับ Server
-      function eventTrigger() {
-        if (eventSource) {
-          eventSource.onopen = () => {
-            setButtonStatus(false, true);
-            console.log("Connected to server");
-          };
-
-          eventSource.onmessage = (event) => {
-            const dataFromServer = JSON.parse(event.data);
-            addDataToTable(dataFromServer);
-            console.log("Received message:", event.data);
-          };
-
-          eventSource.onerror = (error) => {
-            console.error("Error with EventSource:", error);
-            eventSource.close();
-          };
-        }
-      }
-
-      // ฟังก์ชันสำหรับเชื่อมต่อ EventSource อีกครั้ง
-      function reconnectSSE(flag) {
-        setButtonStatus(true, true);
-        subscribeToSSE(flag);
-        eventTrigger();
-      }
-
-      // เริ่มต้นการเชื่อมต่อ EventSource และตรวจสอบสถานะ
-      subscribeToSSE();
-      eventTrigger();
-
-      // Function to format date and time
-      function formatDateTime(dateTime) {
-        const options = {
-          year: "numeric",
-          month: "2-digit",
-          day: "2-digit",
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-        };
-        return new Date(dateTime).toLocaleString("th", options);
-      }
-
-      // Function to add data to the table
-      function addDataToTable(data) {
-        const tableBody = document.getElementById("data-table");
-        const row = document.createElement("tr");
-
-        const cellTime = document.createElement("td");
-        cellTime.textContent = formatDateTime(data.dateTime);
-        row.appendChild(cellTime);
-
-        const cellBath = document.createElement("td");
-        cellBath.textContent = data.bath;
-        row.appendChild(cellBath);
-
-        // Insert the new row at the top of the table body
-        if (tableBody.firstChild) {
-          tableBody.insertBefore(row, tableBody.firstChild);
-        } else {
-          tableBody.appendChild(row);
-        }
-      }
-    </script>
   </body>
+  <script>
+    // ฟังก์ชันสำหรับเริ่มต้นการเชื่อมต่อ EventSource
+    function subscribeToSSE(flag) {
+      if (flag) {
+        eventSource = new EventSource("https://localhost:8081/events");
+        var paragraph = document.getElementById("p");
+        var text = document.createTextNode("This just got added");
+        document.getElementById("status-connect").innerText =
+          "[Connected to SSE HTTP2]";
+      } else {
+        eventSource = new EventSource("http://localhost:8080/events");
+        document.getElementById("status-connect").innerText =
+          "[Connected to SSE HTTP1]";
+      }
+    }
+
+    // ฟังก์ชันสำหรับตรวจสอบสถานะการเชื่อมต่อกับ Server
+    function eventTrigger() {
+      if (eventSource) {
+        eventSource.onopen = () => {
+          setButtonStatus(false, true);
+          console.log("Connected to server");
+        };
+
+        eventSource.onmessage = (event) => {
+          const dataFromServer = JSON.parse(event.data);
+          addDataToTable(dataFromServer);
+          console.log("Received message:", event.data);
+        };
+
+        eventSource.onerror = (error) => {
+          console.error("Error with EventSource:", error);
+          eventSource.close();
+        };
+      }
+    }
+
+    // ฟังก์ชันสำหรับตั้งค่าสถานะปุ่ม
+    function setButtonStatus(close, reconnect) {
+      document.getElementById("close-sse").disabled = close;
+      document.getElementById("reconnect-sse").disabled = reconnect;
+      document.getElementById("connect-http2").disabled = reconnect;
+    }
+
+    // ฟังก์ชันสำหรับปิดการเชื่อมต่อ EventSource
+    function closeSSE() {
+      setButtonStatus(true, false);
+      if (eventSource && eventSource.readyState === 1) {
+        eventSource.close();
+        document.getElementById("status-connect").innerText =
+          "[Connection Closed]";
+      }
+      console.log("Close SSE");
+    }
+
+    // ฟังก์ชันสำหรับเชื่อมต่อ EventSource อีกครั้ง
+    function reconnectSSE(flag) {
+      setButtonStatus(true, true);
+      subscribeToSSE(flag);
+      eventTrigger();
+    }
+
+    // Function to format date and time
+    function formatDateTime(dateTime) {
+      const options = {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      };
+      return new Date(dateTime).toLocaleString("th", options);
+    }
+
+    // Function to add data to the table
+    function addDataToTable(data) {
+      const tableBody = document.getElementById("data-table");
+      const row = document.createElement("tr");
+
+      const cellTime = document.createElement("td");
+      cellTime.textContent = formatDateTime(data.dateTime);
+      row.appendChild(cellTime);
+
+      const cellBath = document.createElement("td");
+      cellBath.textContent = data.bath;
+      row.appendChild(cellBath);
+
+      // Insert the new row at the top of the table body
+      if (tableBody.firstChild) {
+        tableBody.insertBefore(row, tableBody.firstChild);
+      } else {
+        tableBody.appendChild(row);
+      }
+    }
+
+    // เริ่มต้นการเชื่อมต่อ EventSource และตรวจสอบสถานะ
+    subscribeToSSE();
+    eventTrigger();
+  </script>
 </html>
